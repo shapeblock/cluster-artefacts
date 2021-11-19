@@ -1,0 +1,12 @@
+apiVersion: kpack.io/v1alpha1
+kind: ClusterStore
+metadata:
+  name: default
+spec:
+  sources:
+  - image: gcr.io/paketo-buildpacks/ca-certificates
+  - image: gcr.io/paketo-buildpacks/nginx
+  - image: gcr.io/paketo-buildpacks/php-dist
+  - image: gcr.io/paketo-buildpacks/php-composer
+  - image: gcr.io/paketo-buildpacks/php-web
+  
