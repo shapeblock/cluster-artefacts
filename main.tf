@@ -3,7 +3,7 @@ module "kubernetes_resources" {
   cluster_name   = var.cluster_name
   email          = var.email
   host           = var.cluster_url
-  ca_certificate = base64decode(var.ca_cert)
+  ca_certificate = var.ca_cert
   token          = var.token
   storage_class  = "gp2"
   tld            = var.tld
