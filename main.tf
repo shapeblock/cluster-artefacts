@@ -5,6 +5,5 @@ module "kubernetes_resources" {
   host           = var.cluster_url
   ca_certificate = var.ca_cert
   token          = var.token
-  storage_class  = "gp2"
   tld            = var.tld
 }

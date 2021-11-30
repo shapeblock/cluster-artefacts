@@ -19,11 +19,6 @@ variable "ca_certificate" {
   description = "Kubernetes cluster CA certificate"
 }
 
-variable "storage_class" {
-  description = "Default storage class"
-}
-
-
 variable "registry_storage_size" {
   description = "Docker registry disk storage size"
   default     = "80Gi"

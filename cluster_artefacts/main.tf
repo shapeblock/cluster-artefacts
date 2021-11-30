@@ -63,11 +63,6 @@ resource "helm_release" "registry" {
   }
 
   set {
-    name  = "persistence.storageClass"
-    value = var.storage_class
-  }
-
-  set {
     name  = "persistence.size"
     value = var.registry_storage_size
   }
@@ -123,11 +118,6 @@ resource "helm_release" "nfs" {
   set {
     name  = "persistence.enabled"
     value = true
-  }
-
-  set {
-    name  = "persistence.storageClass"
-    value = var.storage_class
   }
 
   set {
