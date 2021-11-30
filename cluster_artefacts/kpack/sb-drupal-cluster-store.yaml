@@ -1,0 +1,10 @@
+apiVersion: kpack.io/v1alpha1
+kind: ClusterStore
+metadata:
+  name: sb-drupal
+spec:
+  sources:
+  - image: registry.gitlab.com/shapeblock-buildpacks/php-cnb
+  - image: registry.gitlab.com/shapeblock-buildpacks/composer-cnb
+  - image: registry.gitlab.com/shapeblock-buildpacks/php-fpm-cnb
+  - image: registry.gitlab.com/shapeblock-buildpacks/nginx-cnb:0.0.1
