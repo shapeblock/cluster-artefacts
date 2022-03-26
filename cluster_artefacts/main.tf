@@ -20,14 +20,12 @@ provider "helm" {
 }
 
 
-// create namespace
 resource "kubernetes_namespace" "cert_manager" {
   metadata {
     name = "cert-manager"
   }
 }
 
-// create namespace
 resource "kubernetes_namespace" "ingress_nginx" {
   metadata {
     name = "ingress-nginx"
@@ -55,7 +53,7 @@ resource "helm_release" "registry" {
   name       = "docker-registry"
   chart      = "docker-registry"
   repository = "https://helm.twun.io"
-  version    = "1.12.0"
+  version    = "2.1.0"
 
   set {
     name  = "persistence.enabled"
@@ -131,7 +129,7 @@ resource "helm_release" "ingress" {
   name       = "nginx-ingress"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "nginx-ingress-controller"
-  version    = "7.6.19"
+  version    = "9.1.12"
   namespace  = "ingress-nginx"
   timeout    = 600
 }
@@ -141,7 +139,7 @@ resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  version    = "v1.5.2"
+  version    = "v1.7.2"
   namespace  = "cert-manager"
   set {
     name  = "installCRDs"
@@ -162,16 +160,14 @@ resource "kubernetes_namespace" "kpack" {
   }
 }
 
-// kpack
-data "kubectl_path_documents" "kpack_manifests" {
-  pattern = "${path.module}/kpack/*.yaml"
+resource "helm_release" "kpack" {
+  name       = "kpack"
+  repository = "https://shapeblock.github.io"
+  chart      = "kpack"
+  version    = "0.1.2"
+  namespace  = "kpack"
 }
 
-resource "kubectl_manifest" "kpack" {
-  count      = length(data.kubectl_path_documents.kpack_manifests.documents)
-  yaml_body  = element(data.kubectl_path_documents.kpack_manifests.documents, count.index)
-  depends_on = [kubernetes_namespace.kpack]
-}
 
 // helm release
 // create namespace
@@ -192,11 +188,12 @@ resource "kubectl_manifest" "helm_operator" {
 }
 
 // helm
+// TODO: Update to Flux 2.x
 resource "helm_release" "helm_operator" {
   name       = "helm-operator"
   chart      = "helm-operator"
   repository = "https://charts.fluxcd.io"
-  version    = "1.4.0"
+  version    = "1.4.2"
   namespace  = "flux"
   set {
     name  = "helm.versions"
@@ -209,6 +206,51 @@ resource "helm_release" "helm_operator" {
   }
 }
 
+
+// Loki
+resource "kubernetes_namespace" "logging" {
+  metadata {
+    name = "logging"
+  }
+}
+
+resource "helm_release" "loki" {
+  name       = "loki"
+  repository = "https://grafana.github.io/helm-charts"
+  chart      = "loki-stack"
+  version    = "2.6.1"
+  namespace  = "loki"
+}
+
+// Sealed secrets
+resource "kubernetes_namespace" "sealed_secrets" {
+  metadata {
+    name = "sealed-secrets"
+  }
+}
+
+resource "helm_release" "sealed_secrets" {
+  name       = "sealed-secrets-controller"
+  repository = "https://bitnami-labs.github.io/sealed-secrets"
+  chart      = "sealed-secrets"
+  version    = "2.1.4"
+  namespace  = "sealed-secrets"
+}
+
+// Valero
+resource "kubernetes_namespace" "velero" {
+  metadata {
+    name = "velero"
+  }
+}
+
+resource "helm_release" "velero" {
+  name       = "velero"
+  repository = "https://vmware-tanzu.github.io/helm-charts"
+  chart      = "velero"
+  version    = "2.29.1"
+  namespace  = "velero"
+}
 
 // read loadbalancer IP
 data "kubernetes_service" "ingress_controller" {
