@@ -22,3 +22,8 @@ variable "email" {
 variable "tld" {
   type = string
 }
+
+variable "velero" {
+  type    = bool
+  default = false
+}

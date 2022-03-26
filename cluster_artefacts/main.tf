@@ -86,11 +86,6 @@ resource "helm_release" "registry" {
   }
 
   set {
-    name  = "ingress.annotations.kubernetes\\.io/ingress\\.class"
-    value = "nginx"
-  }
-
-  set {
     name  = "ingress.annotations.cert-manager\\.io/cluster-issuer"
     value = "letsencrypt-prod"
   }
@@ -242,6 +237,7 @@ resource "kubernetes_namespace" "velero" {
   metadata {
     name = "velero"
   }
+  count = var.velero ? 1 : 0
 }
 
 resource "helm_release" "velero" {
@@ -250,6 +246,7 @@ resource "helm_release" "velero" {
   chart      = "velero"
   version    = "2.29.1"
   namespace  = "velero"
+  count = var.velero ? 1 : 0
 }
 
 // read loadbalancer IP
