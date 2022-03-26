@@ -28,3 +28,8 @@ variable "tld" {
   description = "Top level domain"
   default     = "dev.indigo-consulting.co.in"
 }
+
+variable "velero" {
+  type    = bool
+  default = false
+}
