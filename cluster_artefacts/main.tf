@@ -99,6 +99,12 @@ resource "helm_release" "registry" {
     name  = "secrets.htpasswd"
     value = format("%s:%s", var.cluster_name, null_resource.encrypted_registry_password.triggers["pw"])
   }
+
+  set {
+    name  = "updateStrategy.type"
+    value = "Recreate"
+  }
+
 }
 
 // nfs
