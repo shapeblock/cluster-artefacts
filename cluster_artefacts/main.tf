@@ -169,6 +169,15 @@ resource "helm_release" "kpack" {
   namespace  = "kpack"
 }
 
+data "kubectl_path_documents" "kpack_manifests" {
+  pattern = "${path.module}/kpack/*.yaml"
+}
+
+resource "kubectl_manifest" "cluster_stores" {
+  count      = length(data.kubectl_path_documents.kpack_manifests.documents)
+  yaml_body  = element(data.kubectl_path_documents.kpack_manifests.documents, count.index)
+  depends_on = [helm_release.kpack]
+}
 
 // helm release
 // create namespace
