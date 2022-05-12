@@ -182,9 +182,18 @@ resource "kubectl_manifest" "cluster_stores" {
 // helm release
 // create namespace
 resource "kubernetes_namespace" "flux" {
+  lifecycle {
+    ignore_changes = [metadata]
+  }
+
   metadata {
     name = "flux"
   }
+}
+
+resource "time_sleep" "wait_30_seconds_flux" {
+  depends_on       = [kubernetes_namespace.flux]
+  destroy_duration = "30s"
 }
 
 data "kubectl_path_documents" "helm_manifests" {
@@ -194,7 +203,7 @@ data "kubectl_path_documents" "helm_manifests" {
 resource "kubectl_manifest" "helm_operator" {
   count      = length(data.kubectl_path_documents.helm_manifests.documents)
   yaml_body  = element(data.kubectl_path_documents.helm_manifests.documents, count.index)
-  depends_on = [kubernetes_namespace.flux]
+  depends_on = [time_sleep.wait_30_seconds_flux]
 }
 
 // helm
@@ -232,22 +241,7 @@ resource "helm_release" "loki" {
   namespace  = "logging"
 }
 
-// Sealed secrets
-resource "kubernetes_namespace" "sealed_secrets" {
-  metadata {
-    name = "sealed-secrets"
-  }
-}
-
-resource "helm_release" "sealed_secrets" {
-  name       = "sealed-secrets-controller"
-  repository = "https://bitnami-labs.github.io/sealed-secrets"
-  chart      = "sealed-secrets"
-  version    = "2.1.4"
-  namespace  = "sealed-secrets"
-}
-
-// Valero
+// Velero
 resource "kubernetes_namespace" "velero" {
   metadata {
     name = "velero"
