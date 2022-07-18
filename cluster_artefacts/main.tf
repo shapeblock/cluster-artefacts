@@ -239,6 +239,7 @@ resource "helm_release" "loki" {
   chart      = "loki-stack"
   version    = "2.6.1"
   namespace  = "logging"
+  depends_on = [kubernetes_namespace.logging]
 }
 
 // Velero
@@ -255,7 +256,8 @@ resource "helm_release" "velero" {
   chart      = "velero"
   version    = "2.29.1"
   namespace  = "velero"
-  count = var.velero ? 1 : 0
+  count      = var.velero ? 1 : 0
+  depends_on = [kubernetes_namespace.velero]
 }
 
 // read loadbalancer IP
