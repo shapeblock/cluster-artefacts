@@ -130,7 +130,7 @@ resource "helm_release" "ingress" {
   name       = "nginx-ingress"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "nginx-ingress-controller"
-  version    = "9.1.12"
+  version    = "9.2.20"
   namespace  = "ingress-nginx"
   timeout    = 600
 }
@@ -140,7 +140,7 @@ resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  version    = "v1.7.2"
+  version    = "v1.8.2"
   namespace  = "cert-manager"
   set {
     name  = "installCRDs"
