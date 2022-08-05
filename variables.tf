@@ -27,3 +27,8 @@ variable "velero" {
   type    = bool
   default = false
 }
+
+variable "loki" {
+  type    = bool
+  default = false
+}

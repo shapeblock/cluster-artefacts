@@ -165,7 +165,7 @@ resource "helm_release" "kpack" {
   name       = "kpack"
   repository = "https://shapeblock.github.io"
   chart      = "kpack"
-  version    = "0.1.3"
+  version    = "0.1.4"
   namespace  = "kpack"
 }
 
@@ -196,33 +196,43 @@ resource "time_sleep" "wait_30_seconds_flux" {
   destroy_duration = "30s"
 }
 
-data "kubectl_path_documents" "helm_manifests" {
-  pattern = "${path.module}/helm-operator/*.yaml"
-}
-
-resource "kubectl_manifest" "helm_operator" {
-  count      = length(data.kubectl_path_documents.helm_manifests.documents)
-  yaml_body  = element(data.kubectl_path_documents.helm_manifests.documents, count.index)
-  depends_on = [time_sleep.wait_30_seconds_flux]
-}
-
 // helm
-// TODO: Update to Flux 2.x
 resource "helm_release" "helm_operator" {
   name       = "helm-operator"
-  chart      = "helm-operator"
-  repository = "https://charts.fluxcd.io"
-  version    = "1.4.2"
+  chart      = "flux2"
+  repository = "https://fluxcd-community.github.io/helm-charts"
+  version    = "1.0.0"
   namespace  = "flux"
+
   set {
-    name  = "helm.versions"
-    value = "v3"
+    name  = "imageautomationcontroller.create"
+    value = false
   }
 
   set {
-    name  = "rbac.create"
-    value = true
+    name  = "imagereflectorcontroller.create"
+    value = false
   }
+
+  set {
+    name  = "kustomizecontroller.create"
+    value = false
+  }
+  set {
+    name  = "notificationcontroller.create"
+    value = false
+  }
+}
+
+data "kubectl_file_documents" "sb_repository" {
+  pattern = "${path.module}/sb-repository.yaml"
+}
+
+resource "kubectl_manifest" "sb_repository" {
+  for_each           = data.kubectl_file_documents.sb_repository.manifests
+  yaml_body          = each.value
+  depends_on         = [helm_release.helm_operator]
+  override_namespace = "flux"
 }
 
 
@@ -231,6 +241,7 @@ resource "kubernetes_namespace" "logging" {
   metadata {
     name = "logging"
   }
+  count = var.loki ? 1 : 0
 }
 
 resource "helm_release" "loki" {
@@ -240,6 +251,7 @@ resource "helm_release" "loki" {
   version    = "2.6.1"
   namespace  = "logging"
   depends_on = [kubernetes_namespace.logging]
+  count      = var.loki ? 1 : 0
 }
 
 // Velero
