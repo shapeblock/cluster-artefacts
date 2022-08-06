@@ -225,7 +225,7 @@ resource "helm_release" "helm_operator" {
 }
 
 data "kubectl_file_documents" "sb_repository" {
-  pattern = "${path.module}/sb-repository.yaml"
+  content = file("${path.module}/sb-repository.yaml")
 }
 
 resource "kubectl_manifest" "sb_repository" {
