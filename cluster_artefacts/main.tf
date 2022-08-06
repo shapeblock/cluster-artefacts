@@ -229,7 +229,7 @@ data "kubectl_file_documents" "sb_repository" {
 }
 
 resource "kubectl_manifest" "sb_repository" {
-  for_each           = data.kubectl_file_documents.sb_repository.docs.manifests
+  for_each           = data.kubectl_file_documents.sb_repository.documents
   yaml_body          = each.value
   depends_on         = [helm_release.helm_operator]
   override_namespace = "flux"
