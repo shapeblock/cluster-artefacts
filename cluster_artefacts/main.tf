@@ -218,10 +218,6 @@ resource "helm_release" "helm_operator" {
     name  = "kustomizecontroller.create"
     value = false
   }
-  set {
-    name  = "notificationcontroller.create"
-    value = true
-  }
 }
 
 data "kubectl_file_documents" "sb_repository" {
