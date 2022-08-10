@@ -220,7 +220,7 @@ resource "helm_release" "helm_operator" {
   }
   set {
     name  = "notificationcontroller.create"
-    value = false
+    value = true
   }
 }
 
