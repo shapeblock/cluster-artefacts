@@ -3,5 +3,5 @@ resource "helm_release" "metrics_server" {
   chart      = "metrics-server"
   repository = "https://kubernetes-sigs.github.io/metrics-server/"
   version    = "3.7.0"
-  count      = 0
+  count      = var.metrics_server ? 1 : 0
 }
