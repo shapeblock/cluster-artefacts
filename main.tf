@@ -6,4 +6,7 @@ module "kubernetes_resources" {
   ca_certificate = var.ca_cert
   token          = var.token
   tld            = var.tld
+  velero         = var.velero
+  metrics_server = var.metrics_server
+  loki           = var.loki
 }

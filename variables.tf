@@ -25,15 +25,12 @@ variable "tld" {
 
 variable "velero" {
   type    = bool
-  default = false
 }
 
 variable "loki" {
   type    = bool
-  default = false
 }
 
 variable "metrics_server" {
   type    = bool
-  default = false
 }
