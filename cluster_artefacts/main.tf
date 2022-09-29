@@ -121,7 +121,7 @@ resource "helm_release" "nfs" {
 
   set {
     name  = "persistence.size"
-    value = "80Gi"
+    value = "400Gi"
   }
 }
 
