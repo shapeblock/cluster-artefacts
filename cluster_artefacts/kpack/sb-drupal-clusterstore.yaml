@@ -5,6 +5,7 @@ metadata:
 spec:
   sources:
   - image: registry.gitlab.com/shapeblock-buildpacks/php-cnb:0.0.2
-  - image: registry.gitlab.com/shapeblock-buildpacks/composer-cnb:0.0.2
+  - image: registry.gitlab.com/shapeblock-buildpacks/composer-cnb:0.0.3.28-09-22
   - image: registry.gitlab.com/shapeblock-buildpacks/php-fpm-cnb:0.0.2
   - image: registry.gitlab.com/shapeblock-buildpacks/nginx-cnb:0.0.2
+  - image: ghcr.io/fagiani/buildpacks/fagiani_apt:0.2.4
