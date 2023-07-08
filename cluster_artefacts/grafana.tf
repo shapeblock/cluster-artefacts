@@ -13,7 +13,7 @@ resource "helm_release" "grafana" {
   name       = "grafana"
   chart      = "grafana"
   repository = "https://charts.bitnami.com/bitnami"
-  version    = "7.6.0"
+  version    = "9.0.1"
 
   values = [
     templatefile("${path.module}/grafana.yaml.tpl", { hostname = format("grafana.%s.%s", var.cluster_name, var.tld) })

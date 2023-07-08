@@ -1,21 +1,14 @@
 provider "kubernetes" {
-  host                   = var.host
-  token                  = var.token
-  cluster_ca_certificate = var.ca_certificate
+  config_path = "kubeconfig"
 }
 
 provider "kubectl" {
-  load_config_file       = false
-  host                   = var.host
-  token                  = var.token
-  cluster_ca_certificate = var.ca_certificate
+  config_path = "kubeconfig"
 }
 
 provider "helm" {
   kubernetes {
-    host                   = var.host
-    token                  = var.token
-    cluster_ca_certificate = var.ca_certificate
+    config_path = "kubeconfig"
   }
 }
 
@@ -53,7 +46,7 @@ resource "helm_release" "registry" {
   name       = "docker-registry"
   chart      = "docker-registry"
   repository = "https://helm.twun.io"
-  version    = "2.1.0"
+  version    = "2.2.2"
 
   set {
     name  = "persistence.enabled"
@@ -121,7 +114,7 @@ resource "helm_release" "nfs" {
 
   set {
     name  = "persistence.size"
-    value = "400Gi"
+    value = "40Gi"
   }
 }
 
@@ -130,7 +123,7 @@ resource "helm_release" "ingress" {
   name       = "nginx-ingress"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "nginx-ingress-controller"
-  version    = "9.2.20"
+  version    = "9.7.5"
   namespace  = "ingress-nginx"
   timeout    = 600
 }
@@ -140,7 +133,7 @@ resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  version    = "v1.8.2"
+  version    = "v1.12.2"
   namespace  = "cert-manager"
   set {
     name  = "installCRDs"
@@ -201,7 +194,7 @@ resource "helm_release" "helm_operator" {
   name       = "helm-operator"
   chart      = "flux2"
   repository = "https://fluxcd-community.github.io/helm-charts"
-  version    = "1.0.0"
+  version    = "2.9.0"
   namespace  = "flux"
 
   set {
@@ -244,7 +237,7 @@ resource "helm_release" "loki" {
   name       = "loki"
   repository = "https://grafana.github.io/helm-charts"
   chart      = "loki-stack"
-  version    = "2.6.1"
+  version    = "2.9.10"
   namespace  = "logging"
   depends_on = [kubernetes_namespace.logging]
   count      = var.loki ? 1 : 0
@@ -262,7 +255,7 @@ resource "helm_release" "velero" {
   name       = "velero"
   repository = "https://vmware-tanzu.github.io/helm-charts"
   chart      = "velero"
-  version    = "2.29.1"
+  version    = "4.1.3"
   namespace  = "velero"
   count      = var.velero ? 1 : 0
   depends_on = [kubernetes_namespace.velero]

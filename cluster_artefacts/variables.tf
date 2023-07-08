@@ -30,13 +30,13 @@ variable "tld" {
 }
 
 variable "velero" {
-  type    = bool
+  type = bool
 }
 
 variable "loki" {
-  type    = bool
+  type = bool
 }
 
 variable "metrics_server" {
-  type    = bool
+  type = bool
 }
