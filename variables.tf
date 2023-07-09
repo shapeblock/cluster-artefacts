@@ -3,18 +3,6 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "cluster_url" {
-  type = string
-}
-
-variable "ca_cert" {
-  type = string
-}
-
-variable "token" {
-  type = string
-}
-
 variable "email" {
   type = string
 }

@@ -4,19 +4,6 @@ variable "cluster_name" {
 
 variable "email" {
   description = "Email used for Lets Encrypt certificate issuer"
-  default     = "lakshmi.narasimhan@indigo.co.in"
-}
-
-variable "token" {
-  description = "Kubernetes cluster token"
-}
-
-variable "host" {
-  description = "Kubernetes cluster host"
-}
-
-variable "ca_certificate" {
-  description = "Kubernetes cluster CA certificate"
 }
 
 variable "registry_storage_size" {
@@ -26,7 +13,6 @@ variable "registry_storage_size" {
 
 variable "tld" {
   description = "Top level domain"
-  default     = "dev.indigo-consulting.co.in"
 }
 
 variable "velero" {
