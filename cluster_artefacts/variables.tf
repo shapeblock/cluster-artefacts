@@ -26,3 +26,8 @@ variable "loki" {
 variable "metrics_server" {
   type = bool
 }
+
+variable "ingress" {
+  type    = bool
+  default = false
+}

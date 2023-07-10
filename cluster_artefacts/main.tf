@@ -23,6 +23,7 @@ resource "kubernetes_namespace" "ingress_nginx" {
   metadata {
     name = "ingress-nginx"
   }
+  count = var.ingress ? 1 : 0
 }
 
 resource "random_password" "registry_password" {
@@ -126,6 +127,7 @@ resource "helm_release" "ingress" {
   version    = "9.7.5"
   namespace  = "ingress-nginx"
   timeout    = 600
+  count      = var.ingress ? 1 : 0
 }
 
 // cert manager

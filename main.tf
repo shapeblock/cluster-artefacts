@@ -6,4 +6,5 @@ module "kubernetes_resources" {
   velero         = var.velero
   metrics_server = var.metrics_server
   loki           = var.loki
+  ingress        = var.ingress
 }
