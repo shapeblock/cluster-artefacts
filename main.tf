@@ -7,4 +7,7 @@ module "kubernetes_resources" {
   metrics_server = var.metrics_server
   loki           = var.loki
   ingress        = var.ingress
+  registry       = var.registry
+  nfs            = var.nfs
+  cert_manager   = var.cert_manager
 }

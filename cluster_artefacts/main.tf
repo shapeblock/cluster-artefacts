@@ -17,6 +17,7 @@ resource "kubernetes_namespace" "cert_manager" {
   metadata {
     name = "cert-manager"
   }
+  count = var.cert_manager ? 1 : 0
 }
 
 resource "kubernetes_namespace" "ingress_nginx" {
@@ -28,17 +29,19 @@ resource "kubernetes_namespace" "ingress_nginx" {
 
 resource "random_password" "registry_password" {
   length = 30
+  count  = var.registry ? 1 : 0
 }
 
 resource "null_resource" "encrypted_registry_password" {
   triggers = {
-    orig = random_password.registry_password.result
-    pw   = bcrypt(random_password.registry_password.result)
+    orig = random_password.registry_password.0.result
+    pw   = bcrypt(random_password.registry_password.0.result)
   }
 
   lifecycle {
     ignore_changes = [triggers["pw"]]
   }
+  count = var.registry ? 1 : 0
 }
 
 
@@ -91,13 +94,14 @@ resource "helm_release" "registry" {
 
   set {
     name  = "secrets.htpasswd"
-    value = format("%s:%s", var.cluster_name, null_resource.encrypted_registry_password.triggers["pw"])
+    value = format("%s:%s", var.cluster_name, null_resource.encrypted_registry_password.0.triggers["pw"])
   }
 
   set {
     name  = "updateStrategy.type"
     value = "Recreate"
   }
+  count = var.registry ? 1 : 0
 
 }
 
@@ -117,6 +121,7 @@ resource "helm_release" "nfs" {
     name  = "persistence.size"
     value = "40Gi"
   }
+  count = var.nfs ? 1 : 0
 }
 
 // ingress
@@ -141,6 +146,7 @@ resource "helm_release" "cert_manager" {
     name  = "installCRDs"
     value = true
   }
+  count = var.cert_manager ? 1 : 0
 }
 
 // certificate issuer
@@ -284,14 +290,15 @@ resource "kubernetes_secret" "container_registry" {
 {
   "auths": {
     "registry.${var.cluster_name}.${var.tld}": {
-      "auth": "${base64encode("${var.cluster_name}:${random_password.registry_password.result}")}"
+      "auth": "${base64encode("${var.cluster_name}:${random_password.registry_password.0.result}")}"
     }
   }
 }
 DOCKER
   }
 
-  type = "kubernetes.io/dockerconfigjson"
+  type  = "kubernetes.io/dockerconfigjson"
+  count = var.registry ? 1 : 0
 }
 
 data "kubernetes_secret" "container_registry" {
@@ -299,5 +306,5 @@ data "kubernetes_secret" "container_registry" {
     name      = "registry-creds"
     namespace = "default"
   }
-  depends_on = [kubernetes_secret.container_registry]
+  depends_on = [kubernetes_secret.container_registry.0]
 }

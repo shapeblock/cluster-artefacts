@@ -31,3 +31,19 @@ variable "ingress" {
   type    = bool
   default = false
 }
+
+variable "registry" {
+  type    = bool
+  default = true
+}
+
+variable "nfs" {
+  type    = bool
+  default = false
+}
+
+variable "cert_manager" {
+  type    = bool
+  default = false
+}
+
