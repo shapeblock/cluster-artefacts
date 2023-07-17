@@ -18,4 +18,5 @@ resource "helm_release" "grafana" {
   values = [
     templatefile("${path.module}/grafana.yaml.tpl", { hostname = format("grafana.%s.%s", var.cluster_name, var.tld) })
   ]
+  depends_on = [helm_release.openebs]
 }

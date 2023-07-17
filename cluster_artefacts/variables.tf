@@ -47,3 +47,7 @@ variable "cert_manager" {
   default = false
 }
 
+variable "node_count" {
+  type = number
+}
+

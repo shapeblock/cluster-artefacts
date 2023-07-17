@@ -23,11 +23,24 @@ resource "helm_release" "openebs" {
   version    = "3.7.0"
 
   set {
-    name  = "cstor.enabled"
+    name  = "jiva.storageClass.isDefaultClass"
     value = true
   }
   set {
-    name  = "nfs-provisioner.enabled"
+    name  = "jiva.enabled"
     value = true
   }
+  set {
+    name  = "localpv-provisioner.enabled"
+    value = true
+  }
+  set {
+    name  = "jiva.csiNode.kubeletDir"
+    value = "/var/snap/microk8s/common/var/lib/kubelet/"
+  }
+  set {
+    name  = "jiva.defaultPolicy.replicas"
+    value = var.node_count > 3 ? 3 : var.node_count
+  }
 }
+// helm upgrade --install openebs openebs/openebs -n openebs --set jiva.storageClass.isDefaultClass=true --set jiva.enabled=true --set localpv-provisioner.enabled=true --set jiva.csiNode.kubeletDir="/var/snap/microk8s/common/var/lib/kubelet/" --set jiva.defaultPolicy.replicas=1 # change to 3 later
