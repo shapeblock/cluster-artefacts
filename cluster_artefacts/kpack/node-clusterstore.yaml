@@ -4,4 +4,4 @@ metadata:
   name: paketo-node
 spec:
   sources:
-  - image: gcr.io/paketo-buildpacks/nodejs
+  - image: index.docker.io/paketobuildpacks/nodejs

@@ -4,4 +4,4 @@ metadata:
   name: paketo-django
 spec:
   sources:
-  - image: gcr.io/paketo-buildpacks/python
+  - image: index.docker.io/paketobuildpacks/python

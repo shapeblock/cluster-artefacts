@@ -4,8 +4,14 @@ metadata:
   name: sb-drupal
 spec:
   sources:
-  - image: registry.gitlab.com/shapeblock-buildpacks/php-cnb:0.0.2
-  - image: registry.gitlab.com/shapeblock-buildpacks/composer-cnb:0.0.3.28-09-22
-  - image: registry.gitlab.com/shapeblock-buildpacks/php-fpm-cnb:0.0.2
-  - image: registry.gitlab.com/shapeblock-buildpacks/nginx-cnb:0.0.2
-  - image: ghcr.io/fagiani/buildpacks/fagiani_apt:0.2.4
+  - image: index.docker.io/paketobuildpacks/ca-certificates:3.6.3
+  - image: index.docker.io/paketobuildpacks/php-dist:2.1.8
+  - image: index.docker.io/paketobuildpacks/composer:0.5.15
+  - image: registry.gitlab.com/shapeblock-buildpacks/composer-install:0.0.1
+  - image: index.docker.io/paketobuildpacks/nginx:0.15.3
+  - image: index.docker.io/paketobuildpacks/php-fpm:0.2.15
+  - image: registry.gitlab.com/shapeblock-buildpacks/php-nginx:0.0.1
+  - image: index.docker.io/paketobuildpacks/php-start:0.4.15
+  - image: index.docker.io/paketobuildpacks/nodejs:1.7.0
+  - image: index.docker.io/paketobuildpacks/procfile:5.6.4
+  - image: ghcr.io/fagiani/buildpacks/fagiani_apt:0.2.5
