@@ -25,7 +25,7 @@ variable "metrics_server" {
 
 variable "ingress" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "registry" {
@@ -35,10 +35,15 @@ variable "registry" {
 
 variable "nfs" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "cert_manager" {
+  type    = bool
+  default = true
+}
+
+variable "openebs" {
   type    = bool
   default = false
 }

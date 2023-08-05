@@ -10,5 +10,6 @@ module "kubernetes_resources" {
   registry       = var.registry
   nfs            = var.nfs
   cert_manager   = var.cert_manager
+  openebs        = var.openebs
   node_count     = var.node_count
 }

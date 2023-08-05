@@ -3,8 +3,8 @@ kind: ClusterStack
 metadata:
   name: base
 spec:
-  id: "io.buildpacks.stacks.bionic"
+  id: "io.buildpacks.stacks.jammy"
   buildImage:
-    image: "paketobuildpacks/build:full-cnb"
+    image: "paketobuildpacks/build-jammy-full"
   runImage:
-    image: "paketobuildpacks/run:full-cnb"
+    image: "paketobuildpacks/run-jammy-full"

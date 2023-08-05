@@ -166,7 +166,7 @@ resource "helm_release" "kpack" {
   name       = "kpack"
   repository = "https://shapeblock.github.io"
   chart      = "kpack"
-  version    = "0.1.5"
+  version    = "0.1.6"
   namespace  = "kpack"
 }
 
