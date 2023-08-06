@@ -278,6 +278,12 @@ data "kubernetes_service" "ingress_controller" {
   depends_on = [helm_release.ingress]
 }
 
+
+locals {
+  ingress_hostname = data.kubernetes_service.ingress_controller.status.0.load_balancer.0.ingress.0.hostname
+  ingress_ip       = data.kubernetes_service.ingress_controller.status.0.load_balancer.0.ingress.0.ip
+}
+
 // create a reference secret which will be copied to other namespaces as needed.
 resource "kubernetes_secret" "container_registry" {
   metadata {

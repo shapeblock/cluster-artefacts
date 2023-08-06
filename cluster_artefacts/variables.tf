@@ -56,3 +56,10 @@ variable "node_count" {
   type = number
 }
 
+variable "dnsimple_token" {
+  type = string
+}
+
+variable "dnsimple_account" {
+  type = number
+}

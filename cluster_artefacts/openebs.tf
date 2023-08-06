@@ -10,7 +10,7 @@ resource "kubernetes_namespace" "openebs" {
 }
 
 resource "time_sleep" "wait_30_seconds" {
-  depends_on       = [kubernetes_namespace.0.openebs]
+  depends_on       = [kubernetes_namespace.openebs]
   destroy_duration = "30s"
 }
 

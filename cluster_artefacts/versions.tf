@@ -18,5 +18,9 @@ terraform {
       source  = "hashicorp/random"
       version = "3.1.0"
     }
+    dnsimple = {
+      source  = "dnsimple/dnsimple"
+      version = "1.1.2"
+    }
   }
 }
