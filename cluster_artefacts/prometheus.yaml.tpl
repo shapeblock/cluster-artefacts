@@ -8,3 +8,4 @@ prometheus:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
     tls: true
+    ingressClassName: nginx
