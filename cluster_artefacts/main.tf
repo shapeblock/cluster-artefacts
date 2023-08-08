@@ -249,6 +249,9 @@ resource "helm_release" "loki" {
   namespace  = "logging"
   depends_on = [kubernetes_namespace.logging]
   count      = var.loki ? 1 : 0
+  values = [
+    file("${path.module}/loki-values.yaml")
+  ]
 }
 
 // Velero

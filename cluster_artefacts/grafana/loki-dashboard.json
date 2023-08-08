@@ -50,7 +50,7 @@
       },
       "targets": [
         {
-          "expr": "{namespace=\"$namespace\", appUuid=\"$pod\"}",
+          "expr": "{namespace=\"$namespace\", release=\"$app\"}",
           "refId": "A"
         }
       ],
@@ -105,7 +105,7 @@
           "value": ""
         },
         "hide": 0,
-        "name": "pod",
+        "name": "app",
         "options": [
           {
             "selected": true,
@@ -138,7 +138,7 @@
     ]
   },
   "timezone": "",
-  "title": "Loki Dashboard quick search",
+  "title": "Logs",
   "uid": "liz0yRCZz",
   "version": 1,
   "weekStart": ""
