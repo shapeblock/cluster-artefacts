@@ -2,6 +2,10 @@ grafana:
   updateStrategy:
     type: Recreate
 
+config:
+  useGrafanaIniFile: true
+  grafanaIniConfigMap: "grafana-ini"
+
 dashboardsProvider:
   enabled: true
   
