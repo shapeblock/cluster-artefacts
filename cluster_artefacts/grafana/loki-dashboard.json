@@ -54,7 +54,7 @@
           "refId": "A"
         }
       ],
-      "title": "Logs Panel",
+      "title": "",
       "type": "logs"
     },
     {
@@ -66,7 +66,7 @@
       },
       "id": 4,
       "options": {
-        "content": "<div style=\"text-align:center\"> For Grafana Loki blog example </div>\n\n\n",
+        "content": "<div style=\"text-align:center\"> EOF </div>\n\n\n",
         "mode": "html"
       },
       "pluginVersion": "8.3.3",
