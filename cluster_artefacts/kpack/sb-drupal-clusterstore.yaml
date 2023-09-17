@@ -7,11 +7,11 @@ spec:
   - image: index.docker.io/paketobuildpacks/ca-certificates
   - image: index.docker.io/paketobuildpacks/php-dist
   - image: index.docker.io/paketobuildpacks/composer
-  - image: registry.gitlab.com/shapeblock-buildpacks/composer-install
+  - image: registry.gitlab.com/shapeblock-buildpacks/composer-install:0.0.1
   - image: index.docker.io/paketobuildpacks/nginx
   - image: index.docker.io/paketobuildpacks/php-fpm
-  - image: registry.gitlab.com/shapeblock-buildpacks/php-nginx
+  - image: registry.gitlab.com/shapeblock-buildpacks/php-nginx:0.0.1
   - image: index.docker.io/paketobuildpacks/php-start
   - image: index.docker.io/paketobuildpacks/nodejs
   - image: index.docker.io/paketobuildpacks/procfile
-  - image: ghcr.io/fagiani/buildpacks/fagiani_apt
+  - image: ghcr.io/fagiani/buildpacks/fagiani_apt:0.2.5
