@@ -31,6 +31,18 @@ resource "kubernetes_config_map" "loki" {
   }
 }
 
+// kubernetes dashboard configmap
+resource "kubernetes_config_map" "kubernetes" {
+  metadata {
+    name = "kubernetes-dashboard"
+  }
+
+  data = {
+    "kubernetes-dashboard.json" = file("${path.module}/grafana/kubernetes-dashboard.json")
+  }
+}
+
+
 // prometheus, loki datasource secret
 resource "kubernetes_secret" "datasources" {
   metadata {
@@ -56,7 +68,7 @@ resource "helm_release" "grafana" {
   values = [
     templatefile("${path.module}/grafana/grafana.yaml.tpl", { hostname = format("grafana.%s.%s", var.cluster_name, var.tld), password = random_password.grafana_password.result })
   ]
-  depends_on = [kubernetes_config_map.grafana_ini, kubernetes_config_map.prometheus, kubernetes_config_map.loki, kubernetes_secret.datasources, random_password.grafana_password]
+  depends_on = [kubernetes_config_map.grafana_ini, kubernetes_config_map.prometheus, kubernetes_config_map.loki, kubernetes_config_map.kubernetes, kubernetes_secret.datasources, random_password.grafana_password]
 }
 
 // helm upgrade --install grafana bitnami/grafana --version 9.0.1 -f grafana-values.yaml
