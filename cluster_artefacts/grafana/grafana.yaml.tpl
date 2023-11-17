@@ -14,6 +14,8 @@ dashboardsConfigMaps:
   fileName: prometheus-dashboard.json
 - configMapName: loki-dashboard
   fileName: loki-dashboard.json
+- configMapName: kubernetes-dashboard
+  fileName: kubernetes-dashboard.json
 
 
 datasources:
@@ -30,7 +32,6 @@ ingress:
   tls: true
   ingressClassName: nginx
 
-#TODO: templatize this
 admin:
   user: "admin"
   password: "${password}"
