@@ -9,18 +9,22 @@ variable "email" {
 
 variable "tld" {
   type = string
+  description = "Top level domain"
 }
 
 variable "velero" {
-  type = bool
+  type    = bool
+  default = false
 }
 
 variable "loki" {
-  type = bool
+  type    = bool
+  default = false
 }
 
 variable "metrics_server" {
-  type = bool
+  type    = bool
+  default = false
 }
 
 variable "ingress" {
@@ -52,11 +56,4 @@ variable "node_count" {
   type = number
 }
 
-variable "dnsimple_token" {
-  type = string
-}
-
-variable "dnsimple_account" {
-  type = number
-}
 

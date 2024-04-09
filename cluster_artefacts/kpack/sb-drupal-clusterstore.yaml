@@ -14,5 +14,5 @@ spec:
   - image: index.docker.io/paketobuildpacks/php-start
   - image: index.docker.io/paketobuildpacks/nodejs
   - image: index.docker.io/paketobuildpacks/procfile
-  - image: ghcr.io/fagiani/buildpacks/fagiani_apt:0.2.5
-  - image: registry.gitlab.com/shapeblock-buildpacks/chmod:0.0.2
+  - image: index.docker.io/shapeblock/apt:0.3.1
+  - image: index.docker.io/shapeblock/chmod:0.0.5

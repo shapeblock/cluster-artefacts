@@ -44,13 +44,12 @@ resource "null_resource" "encrypted_registry_password" {
   count = var.registry ? 1 : 0
 }
 
-
 // registry
 resource "helm_release" "registry" {
   name       = "docker-registry"
   chart      = "docker-registry"
   repository = "https://helm.twun.io"
-  version    = "2.2.2"
+  version    = "2.2.3"
 
   set {
     name  = "persistence.enabled"
@@ -129,7 +128,7 @@ resource "helm_release" "ingress" {
   name       = "nginx-ingress"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "nginx-ingress-controller"
-  version    = "9.7.5"
+  version    = "11.0.2"
   namespace  = "ingress-nginx"
   timeout    = 600
   count      = var.ingress ? 1 : 0
@@ -140,7 +139,7 @@ resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  version    = "v1.12.2"
+  version    = "v1.14.4"
   namespace  = "cert-manager"
   set {
     name  = "installCRDs"
@@ -202,7 +201,7 @@ resource "helm_release" "helm_operator" {
   name       = "helm-operator"
   chart      = "flux2"
   repository = "https://fluxcd-community.github.io/helm-charts"
-  version    = "2.9.0"
+  version    = "2.12.4"
   namespace  = "flux"
 
   set {
@@ -245,7 +244,7 @@ resource "helm_release" "loki" {
   name       = "loki"
   repository = "https://grafana.github.io/helm-charts"
   chart      = "loki-stack"
-  version    = "2.9.10"
+  version    = "6.0.0"
   namespace  = "logging"
   depends_on = [kubernetes_namespace.logging]
   count      = var.loki ? 1 : 0
@@ -266,7 +265,7 @@ resource "helm_release" "velero" {
   name       = "velero"
   repository = "https://vmware-tanzu.github.io/helm-charts"
   chart      = "velero"
-  version    = "4.1.3"
+  version    = "6.0.0"
   namespace  = "velero"
   count      = var.velero ? 1 : 0
   depends_on = [kubernetes_namespace.velero]
