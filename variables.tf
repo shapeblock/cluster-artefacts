@@ -3,12 +3,19 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "sb_url" {
+  type = string
+}
+variable "cluster_uuid" {
+  type = string
+}
+
 variable "email" {
   type = string
 }
 
 variable "tld" {
-  type = string
+  type        = string
   description = "Top level domain"
 }
 
@@ -53,7 +60,8 @@ variable "openebs" {
 }
 
 variable "node_count" {
-  type = number
+  type    = number
+  default = 1
 }
 
 

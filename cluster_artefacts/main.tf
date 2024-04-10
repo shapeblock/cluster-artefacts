@@ -316,3 +316,9 @@ data "kubernetes_secret" "container_registry" {
   }
   depends_on = [kubernetes_secret.container_registry.0]
 }
+
+// SB operator
+resource "kubectl_manifest" "sb_operator" {
+  yaml_body  = templatefile("${path.module}/sb-operator.yaml.tpl", { sb_url = var.sb_url, cluster_uuid = var.cluster_uuid })
+  depends_on = [helm_release.cert_manager]
+}
