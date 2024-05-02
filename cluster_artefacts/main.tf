@@ -220,17 +220,10 @@ resource "helm_release" "helm_operator" {
   }
 }
 
-data "kubectl_file_documents" "sb_repository" {
-  content = file("${path.module}/sb-repository.yaml")
+data "kubectl_manifest" "sb_repository" {
+  yaml_body  = file("${path.module}/sb-repository.yaml")
+  depends_on = [helm_release.helm_operator]
 }
-
-resource "kubectl_manifest" "sb_repository" {
-  count              = length(data.kubectl_file_documents.sb_repository.documents)
-  yaml_body          = element(data.kubectl_file_documents.sb_repository.documents, count.index)
-  depends_on         = [helm_release.helm_operator]
-  override_namespace = "flux"
-}
-
 
 // Loki
 resource "kubernetes_namespace" "logging" {
@@ -317,8 +310,18 @@ data "kubernetes_secret" "container_registry" {
   depends_on = [kubernetes_secret.container_registry.0]
 }
 
+data "kubectl_path_documents" "sb_manifests" {
+  pattern = "${path.module}/shapeblock/*.yaml"
+}
+
+resource "kubectl_manifest" "shapeblock_crs" {
+  count      = length(data.kubectl_path_documents.sb_manifests.documents)
+  yaml_body  = element(data.kubectl_path_documents.sb_manifests.documents, count.index)
+  depends_on = [helm_release.cert_manager]
+}
+
 // SB operator
 resource "kubectl_manifest" "sb_operator" {
   yaml_body  = templatefile("${path.module}/sb-operator.yaml.tpl", { sb_url = var.sb_url, cluster_uuid = var.cluster_uuid })
-  depends_on = [helm_release.cert_manager]
+  depends_on = [kubectl_manifest.shapeblock_crs]
 }
