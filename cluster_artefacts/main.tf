@@ -220,7 +220,7 @@ resource "helm_release" "helm_operator" {
   }
 }
 
-data "kubectl_manifest" "sb_repository" {
+resource "kubectl_manifest" "sb_repository" {
   yaml_body  = file("${path.module}/sb-repository.yaml")
   depends_on = [helm_release.helm_operator]
 }
