@@ -225,6 +225,11 @@ resource "kubectl_manifest" "sb_repository" {
   depends_on = [helm_release.helm_operator]
 }
 
+resource "kubectl_manifest" "bitnami_repository" {
+  yaml_body  = file("${path.module}/bitnami-repository.yaml")
+  depends_on = [helm_release.helm_operator]
+}
+
 // Loki
 resource "kubernetes_namespace" "logging" {
   metadata {
