@@ -38,7 +38,8 @@ spec:
                   repo:
                     type: string
                   values:
-                    type: string
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
                   version:
                     type: string
                   build:
