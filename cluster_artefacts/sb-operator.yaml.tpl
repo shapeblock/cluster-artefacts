@@ -17,8 +17,16 @@ spec:
       serviceAccountName: sb-admin
       containers:
       - name: sb-operator
-        image: shapeblock/sb-operator:08-may-2024-17.49
+        image: shapeblock/sb-operator:15-july-2024-15.37
         imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 30
         env:
           - name: SB_URL
             value: ${sb_url}
