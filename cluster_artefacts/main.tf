@@ -272,7 +272,7 @@ resource "kubernetes_secret" "container_registry" {
 {
   "auths": {
     "registry.${var.cluster_name}.${var.tld}": {
-      "auth": "${base64encode("admin:${random_password.registry_password.0.result}")}"
+      "auth": "${base64encode("${var.cluster_name}:${random_password.registry_password.0.result}")}"
     }
   }
 }
