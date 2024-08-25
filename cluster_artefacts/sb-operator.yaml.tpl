@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sb-operator
+  namespace: ${namespace}
 spec:
   replicas: 1
   strategy:
@@ -14,10 +15,10 @@ spec:
       labels:
         application: sb-operator
     spec:
-      serviceAccountName: sb-admin
+      serviceAccountName: shapeblock-admin
       containers:
       - name: sb-operator
-        image: shapeblock/sb-operator:15-july-2024-15.37
+        image: ${image}:${tag}
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3

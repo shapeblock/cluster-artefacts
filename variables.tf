@@ -64,4 +64,13 @@ variable "node_count" {
   default = 1
 }
 
+variable "sb_operator_image" {
+  description = "Shapeblock operator image repo"
+  default     = "ghcr.io/shapeblock/operator"
+}
+
+variable "sb_operator_tag" {
+  description = "Shapeblock operator image tag"
+  default     = "v1.0.1"
+}
 

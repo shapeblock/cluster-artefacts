@@ -13,23 +13,8 @@ provider "helm" {
 }
 
 
-resource "kubernetes_namespace" "cert_manager" {
-  metadata {
-    name = "cert-manager"
-  }
-  count = var.cert_manager ? 1 : 0
-}
-
-resource "kubernetes_namespace" "ingress_nginx" {
-  metadata {
-    name = "ingress-nginx"
-  }
-  count = var.ingress ? 1 : 0
-}
-
 resource "random_password" "registry_password" {
   length = 30
-  count  = var.registry ? 1 : 0
 }
 
 resource "null_resource" "encrypted_registry_password" {
@@ -41,15 +26,15 @@ resource "null_resource" "encrypted_registry_password" {
   lifecycle {
     ignore_changes = [triggers["pw"]]
   }
-  count = var.registry ? 1 : 0
 }
 
 // registry
 resource "helm_release" "registry" {
-  name       = "docker-registry"
+  name       = "registry"
   chart      = "docker-registry"
   repository = "https://helm.twun.io"
   version    = "2.2.3"
+  namespace  = "shapeblock"
 
   set {
     name  = "persistence.enabled"
@@ -110,6 +95,7 @@ resource "helm_release" "nfs" {
   chart      = "nfs-server-provisioner"
   repository = "https://raphaelmonrouzeau.github.io/charts/repository"
   version    = "1.3.0"
+  namespace  = "shapeblock"
 
   set {
     name  = "persistence.enabled"
@@ -128,8 +114,8 @@ resource "helm_release" "ingress" {
   name       = "nginx-ingress"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "nginx-ingress-controller"
-  version    = "11.0.2"
-  namespace  = "ingress-nginx"
+  version    = "11.3.18"
+  namespace  = "shapeblock"
   timeout    = 600
   count      = var.ingress ? 1 : 0
 }
@@ -137,15 +123,16 @@ resource "helm_release" "ingress" {
 // cert manager
 resource "helm_release" "cert_manager" {
   name       = "cert-manager"
-  repository = "https://charts.jetstack.io"
+  repository = "https://charts.bitnami.com/bitnami"
   chart      = "cert-manager"
-  version    = "v1.14.4"
+  version    = "1.3.16"
   namespace  = "cert-manager"
   set {
     name  = "installCRDs"
     value = true
   }
-  count = var.cert_manager ? 1 : 0
+  timeout          = 600
+  create_namespace = true
 }
 
 // certificate issuer
@@ -164,9 +151,9 @@ resource "kubernetes_namespace" "kpack" {
 resource "helm_release" "kpack" {
   name       = "kpack"
   repository = "https://shapeblock.github.io"
-  chart      = "kpack"
-  version    = "0.1.6"
-  namespace  = "kpack"
+  chart      = "sb-kpack"
+  version    = "0.1.7"
+  namespace  = "shapeblock"
 }
 
 data "kubectl_path_documents" "kpack_manifests" {
@@ -179,30 +166,13 @@ resource "kubectl_manifest" "cluster_stores" {
   depends_on = [helm_release.kpack]
 }
 
-// helm release
-// create namespace
-resource "kubernetes_namespace" "flux" {
-  lifecycle {
-    ignore_changes = [metadata]
-  }
-
-  metadata {
-    name = "flux"
-  }
-}
-
-resource "time_sleep" "wait_30_seconds_flux" {
-  depends_on       = [kubernetes_namespace.flux]
-  destroy_duration = "30s"
-}
-
 // helm
 resource "helm_release" "helm_operator" {
   name       = "helm-operator"
   chart      = "flux2"
   repository = "https://fluxcd-community.github.io/helm-charts"
-  version    = "2.12.4"
-  namespace  = "flux"
+  version    = "2.13.0"
+  namespace  = "shapeblock"
 
   set {
     name  = "imageautomationcontroller.create"
@@ -273,7 +243,7 @@ resource "helm_release" "velero" {
 data "kubernetes_service" "ingress_controller" {
   metadata {
     name      = "nginx-ingress-nginx-ingress-controller"
-    namespace = "ingress-nginx"
+    namespace = "shapeblock"
   }
   depends_on = [helm_release.ingress]
 }
@@ -288,31 +258,22 @@ locals {
 resource "kubernetes_secret" "container_registry" {
   metadata {
     name      = "registry-creds"
-    namespace = "default"
+    namespace = "shapeblock"
   }
 
   data = {
     ".dockerconfigjson" = <<DOCKER
 {
   "auths": {
-    "registry.${var.cluster_name}.${var.tld}": {
-      "auth": "${base64encode("${var.cluster_name}:${random_password.registry_password.0.result}")}"
+    "registry.${var.cluster_dns}": {
+      "auth": "${base64encode("admin:${random_password.registry_password.result}")}"
     }
   }
 }
 DOCKER
   }
-
   type  = "kubernetes.io/dockerconfigjson"
   count = var.registry ? 1 : 0
-}
-
-data "kubernetes_secret" "container_registry" {
-  metadata {
-    name      = "registry-creds"
-    namespace = "default"
-  }
-  depends_on = [kubernetes_secret.container_registry.0]
 }
 
 data "kubectl_path_documents" "sb_manifests" {
@@ -325,8 +286,17 @@ resource "kubectl_manifest" "shapeblock_crs" {
   depends_on = [helm_release.cert_manager]
 }
 
+locals {
+  sb_operator_values = templatefile("${path.module}/sb-operator.yaml.tpl", {
+    image        = var.sb_operator_image,
+    tag          = var.sb_operator_tag,
+    sb_url       = var.sb_url,
+    cluster_uuid = var.cluster_uuid,
+    namespace    = "shapeblock"
+  })
+}
 // SB operator
 resource "kubectl_manifest" "sb_operator" {
-  yaml_body  = templatefile("${path.module}/sb-operator.yaml.tpl", { sb_url = var.sb_url, cluster_uuid = var.cluster_uuid })
+  yaml_body  = local.sb_operator_values
   depends_on = [kubectl_manifest.shapeblock_crs]
 }
