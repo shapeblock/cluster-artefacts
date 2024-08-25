@@ -12,6 +12,11 @@ provider "helm" {
   }
 }
 
+resource "kubernetes_namespace" "shapeblock" {
+  metadata {
+    name = "shapeblock"
+  }
+}
 
 resource "random_password" "registry_password" {
   length = 30

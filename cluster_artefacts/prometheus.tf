@@ -7,4 +7,5 @@ resource "helm_release" "prometheus" {
   values = [
     templatefile("${path.module}/prometheus.yaml.tpl", { hostname = format("prometheus.%s.%s", var.cluster_name, var.tld) })
   ]
+  count = var.prometheus ? 1 : 0
 }
