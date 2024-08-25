@@ -15,6 +15,7 @@ provider "helm" {
 
 resource "random_password" "registry_password" {
   length = 30
+  count = var.registry ? 1 : 0
 }
 
 resource "null_resource" "encrypted_registry_password" {
@@ -26,6 +27,7 @@ resource "null_resource" "encrypted_registry_password" {
   lifecycle {
     ignore_changes = [triggers["pw"]]
   }
+  count = var.registry ? 1 : 0
 }
 
 // registry
@@ -86,7 +88,6 @@ resource "helm_release" "registry" {
     value = "Recreate"
   }
   count = var.registry ? 1 : 0
-
 }
 
 // nfs
@@ -265,7 +266,7 @@ resource "kubernetes_secret" "container_registry" {
     ".dockerconfigjson" = <<DOCKER
 {
   "auths": {
-    "registry.${var.cluster_dns}": {
+    "registry.${var.cluster_name}.${var.tld}": {
       "auth": "${base64encode("admin:${random_password.registry_password.result}")}"
     }
   }
