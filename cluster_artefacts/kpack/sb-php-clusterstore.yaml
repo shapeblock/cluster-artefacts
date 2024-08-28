@@ -5,6 +5,7 @@ metadata:
 spec:
   sources:
   - image: index.docker.io/paketobuildpacks/ca-certificates
+  - image: index.docker.io/paketobuildpacks/php
   - image: index.docker.io/paketobuildpacks/php-dist
   - image: index.docker.io/paketobuildpacks/composer
   - image: registry.gitlab.com/shapeblock-buildpacks/composer-install:0.0.1
