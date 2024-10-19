@@ -45,12 +45,12 @@ variable "ingress" {
 
 variable "registry" {
   type    = bool
-  default = true
+  default = false
 }
 
 variable "nfs" {
   type    = bool
-  default = true
+  default = false
 }
 
 variable "cert_manager" {
@@ -67,12 +67,10 @@ variable "node_count" {
   type = number
 }
 
-variable "sb_operator_image" {
-  description = "Shapeblock operator image repo"
-  default     = "ghcr.io/shapeblock/operator"
+variable "epinio_username" {
+  type    = string
 }
 
-variable "sb_operator_tag" {
-  description = "Shapeblock operator image tag"
-  default     = "v1.0.1"
+variable "epinio_password" {
+  type    = string
 }

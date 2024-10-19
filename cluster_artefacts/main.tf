@@ -147,65 +147,6 @@ resource "kubectl_manifest" "cluster_issuer" {
   depends_on = [helm_release.cert_manager]
 }
 
-
-resource "kubernetes_namespace" "kpack" {
-  metadata {
-    name = "kpack"
-  }
-}
-
-resource "helm_release" "kpack" {
-  name       = "kpack"
-  repository = "https://shapeblock.github.io"
-  chart      = "sb-kpack"
-  version    = "0.1.7"
-  namespace  = "shapeblock"
-}
-
-data "kubectl_path_documents" "kpack_manifests" {
-  pattern = "${path.module}/kpack/*.yaml"
-}
-
-resource "kubectl_manifest" "cluster_stores" {
-  count      = length(data.kubectl_path_documents.kpack_manifests.documents)
-  yaml_body  = element(data.kubectl_path_documents.kpack_manifests.documents, count.index)
-  depends_on = [helm_release.kpack]
-}
-
-// helm
-resource "helm_release" "helm_operator" {
-  name       = "helm-operator"
-  chart      = "flux2"
-  repository = "https://fluxcd-community.github.io/helm-charts"
-  version    = "2.13.0"
-  namespace  = "shapeblock"
-
-  set {
-    name  = "imageautomationcontroller.create"
-    value = false
-  }
-
-  set {
-    name  = "imagereflectorcontroller.create"
-    value = false
-  }
-
-  set {
-    name  = "kustomizecontroller.create"
-    value = false
-  }
-}
-
-resource "kubectl_manifest" "sb_repository" {
-  yaml_body  = file("${path.module}/sb-repository.yaml")
-  depends_on = [helm_release.helm_operator]
-}
-
-resource "kubectl_manifest" "bitnami_repository" {
-  yaml_body  = file("${path.module}/bitnami-repository.yaml")
-  depends_on = [helm_release.helm_operator]
-}
-
 // Loki
 resource "kubernetes_namespace" "logging" {
   metadata {
@@ -286,23 +227,44 @@ data "kubectl_path_documents" "sb_manifests" {
   pattern = "${path.module}/shapeblock/*.yaml"
 }
 
-resource "kubectl_manifest" "shapeblock_crs" {
-  count      = length(data.kubectl_path_documents.sb_manifests.documents)
-  yaml_body  = element(data.kubectl_path_documents.sb_manifests.documents, count.index)
-  depends_on = [helm_release.cert_manager]
-}
+// epinio
+resource "helm_release" "epinio" {
+  name             = "epinio"
+  repository       = "https://epinio.github.io/helm-charts"
+  chart            = "epinio"
+  version          = "1.11.1"
+  namespace        = "epinio"
+  timeout          = 600
+  create_namespace = true
+  depends_on       = [kubectl_manifest.cluster_issuer]
 
-locals {
-  sb_operator_values = templatefile("${path.module}/sb-operator.yaml.tpl", {
-    image        = var.sb_operator_image,
-    tag          = var.sb_operator_tag,
-    sb_url       = var.sb_url,
-    cluster_uuid = var.cluster_uuid,
-    namespace    = "shapeblock"
-  })
-}
-// SB operator
-resource "kubectl_manifest" "sb_operator" {
-  yaml_body  = local.sb_operator_values
-  depends_on = [kubectl_manifest.shapeblock_crs]
+  set {
+    name  = "global.domain"
+    value = "${var.cluster_name}.${var.tld}"
+  }
+
+  set {
+    name  = "global.tlsIssuer"
+    value = "letsencrypt-prod"
+  }
+
+  set {
+    name  = "global.tlsIssuerEmail"
+    value = var.email
+  }
+
+  set {
+    name  = "ingress.ingressClassName"
+    value = "nginx"
+  }
+
+  set {
+    name  = "users[0].username"
+    value = var.epinio_username
+  }
+
+  set {
+    name  = "users[0].password"
+    value = var.epinio_password
+  }
 }

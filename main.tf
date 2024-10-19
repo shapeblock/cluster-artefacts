@@ -15,6 +15,6 @@ module "kubernetes_resources" {
   node_count        = var.node_count
   sb_url            = var.sb_url
   cluster_uuid      = var.cluster_uuid
-  sb_operator_image = var.sb_operator_image
-  sb_operator_tag   = var.sb_operator_tag
+  epinio_username   = var.epinio_username
+  epinio_password   = var.epinio_password
 }
