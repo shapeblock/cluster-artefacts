@@ -238,33 +238,25 @@ resource "helm_release" "epinio" {
   create_namespace = true
   depends_on       = [kubectl_manifest.cluster_issuer]
 
-  set {
-    name  = "global.domain"
-    value = "${var.cluster_name}.${var.tld}"
-  }
-
-  set {
-    name  = "global.tlsIssuer"
-    value = "letsencrypt-prod"
-  }
-
-  set {
-    name  = "global.tlsIssuerEmail"
-    value = var.email
-  }
-
-  set {
-    name  = "ingress.ingressClassName"
-    value = "nginx"
-  }
-
-  set {
-    name  = "users[0].username"
-    value = var.epinio_username
-  }
-
-  set {
-    name  = "users[0].password"
-    value = var.epinio_password
-  }
+  values = [
+    yamlencode({
+      global = {
+        domain        = "${var.cluster_name}.${var.tld}"
+        tlsIssuer     = "letsencrypt-prod"
+        tlsIssuerEmail = var.email
+      }
+      ingress = {
+        ingressClassName = "nginx"
+      }
+      api = {
+        users = [
+          {
+            username = var.epinio_username
+            password = var.epinio_password
+            roles    = ["admin"]
+          }
+        ]
+      }
+    })
+  ]
 }
