@@ -244,6 +244,9 @@ resource "helm_release" "epinio" {
         domain        = "${var.cluster_name}.${var.tld}"
         tlsIssuer     = "letsencrypt-prod"
         tlsIssuerEmail = var.email
+        dex = {
+          enabled = false
+        }
       }
       ingress = {
         ingressClassName = "nginx"
@@ -256,6 +259,9 @@ resource "helm_release" "epinio" {
             roles    = ["admin"]
           }
         ]
+      }
+      epinioUI = {
+        enabled = false
       }
     })
   ]
