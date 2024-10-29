@@ -141,10 +141,17 @@ resource "helm_release" "cert_manager" {
   create_namespace = true
 }
 
-// certificate issuer
+resource "null_resource" "wait_for_cert_manager" {
+  provisioner "local-exec" {
+    command = "sleep 60"
+  }
+
+  depends_on = [helm_release.cert_manager]
+}
+
 resource "kubectl_manifest" "cluster_issuer" {
   yaml_body  = templatefile("${path.module}/cert-issuer.yaml.tpl", { email = var.email })
-  depends_on = [helm_release.cert_manager]
+  depends_on = [null_resource.wait_for_cert_manager]
 }
 
 // Loki
