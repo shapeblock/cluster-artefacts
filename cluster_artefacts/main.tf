@@ -266,27 +266,6 @@ resource "helm_release" "epinio" {
       epinioUI = {
         enabled = false
       }
-      minio = {
-        ingress = {
-          enabled = true
-          ingressClassName = "nginx"
-          annotations = {
-            "cert-manager.io/cluster-issuer" = "letsencrypt-prod"
-          }
-          hosts = [
-            {
-              name = "minio.${var.cluster_name}.${var.tld}"
-              path = "/"
-            }
-          ]
-          tls = [
-            {
-              hosts = ["minio.${var.cluster_name}.${var.tld}"]
-              secretName = "minio-tls"
-            }
-          ]
-        }
-      }
     })
   ]
 }
