@@ -425,7 +425,7 @@ resource "kubectl_manifest" "service_catalog_patches" {
   }
 
   yaml_body = <<-YAML
-    apiVersion: services.application.epinio.io/v1
+    apiVersion: application.epinio.io/v1
     kind: Service
     metadata:
       name: "${each.key}-dev"
