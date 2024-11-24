@@ -428,7 +428,7 @@ resource "kubectl_manifest" "service_catalog_patches" {
     apiVersion: services.application.epinio.io/v1
     kind: Service
     metadata:
-      name: ${each.key}
+      name: "${each.key}-dev"
       namespace: epinio
     spec:
       chartVersion: "${each.value.chartVersion}"
