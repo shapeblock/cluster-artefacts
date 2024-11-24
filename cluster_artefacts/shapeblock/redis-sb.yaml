@@ -5,10 +5,13 @@ metadata:
   namespace: epinio
 spec:
   chartVersion: "18.4.0"
+  chart: redis
   appVersion: "7.2.4"
+  helmRepo:
+    name: bitnami
+    url: https://charts.bitnami.com/bitnami
+  name: "redis-sb"
   values: |-
-    auth:
-      database: shapeblock
     architecture: standalone
     master:
       persistence:

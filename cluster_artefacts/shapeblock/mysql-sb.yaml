@@ -5,13 +5,19 @@ metadata:
   namespace: epinio
 spec:
   chartVersion: "9.14.4"
+  chart: mysql
   appVersion: "8.0.35"
+  name: "mysql-sb"
+  helmRepo:
+    name: bitnami
+    url: https://charts.bitnami.com/bitnami
   values: |-
     auth:
       database: shapeblock
     primary:
       persistence:
         size: 2Gi
+    architecture: standalone
     extraDeploy:
       - |
         # Create a service account, role and binding to allow to list, get and

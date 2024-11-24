@@ -5,10 +5,13 @@ metadata:
   namespace: epinio
 spec:
   chartVersion: "16.3.0"
+  chart: mongodb
   appVersion: "8.0.3"
+  helmRepo:
+    name: bitnami
+    url: https://charts.bitnami.com/bitnami
+  name: "mongodb-sb"
   values: |-
-    auth:
-      database: shapeblock
     architecture: standalone
     primary:
       persistence:
