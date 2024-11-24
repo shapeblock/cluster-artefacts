@@ -1,7 +1,7 @@
 apiVersion: application.epinio.io/v1
 kind: Service
 metadata:
-  name: "redis-dev"
+  name: "redis-sb"
   namespace: epinio
 spec:
   chartVersion: "18.4.0"

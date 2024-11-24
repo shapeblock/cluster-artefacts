@@ -1,7 +1,7 @@
 apiVersion: application.epinio.io/v1
 kind: Service
 metadata:
-  name: "mysql-dev"
+  name: "mysql-sb"
   namespace: epinio
 spec:
   chartVersion: "9.14.4"

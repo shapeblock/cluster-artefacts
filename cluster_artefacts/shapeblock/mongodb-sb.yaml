@@ -1,7 +1,7 @@
 apiVersion: application.epinio.io/v1
 kind: Service
 metadata:
-  name: "mongodb-dev"
+  name: "mongodb-sb"
   namespace: epinio
 spec:
   chartVersion: "16.3.0"
