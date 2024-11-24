@@ -376,7 +376,6 @@ resource "kubectl_manifest" "service_catalog_patches" {
       values = <<-EOT
         auth:
           database: shapeblock
-        architecture: standalone
         primary:
           persistence:
             size: 2Gi
@@ -389,7 +388,6 @@ resource "kubectl_manifest" "service_catalog_patches" {
       values = <<-EOT
         auth:
           database: shapeblock
-        architecture: standalone
         primary:
           persistence:
             size: 2Gi
