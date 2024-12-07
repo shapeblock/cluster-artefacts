@@ -12,8 +12,6 @@ spec:
     name: bitnami
     url: https://charts.bitnami.com/bitnami
   values: |-
-    auth:
-      database: shapeblock
     primary:
       persistence:
         size: 2Gi

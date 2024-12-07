@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-12-07
+- Remove unused sb_url variable from code.
+
 ## 2024-11-09
 - Add service catalog patches to epinio.
 - Remove sb_manifest data source from the code.

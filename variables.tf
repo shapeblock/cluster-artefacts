@@ -3,9 +3,6 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "sb_url" {
-  type = string
-}
 variable "cluster_uuid" {
   type = string
 }

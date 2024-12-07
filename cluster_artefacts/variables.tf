@@ -2,9 +2,6 @@ variable "cluster_name" {
   description = "Name of the k8s cluster."
 }
 
-variable "sb_url" {
-  type = string
-}
 variable "cluster_uuid" {
   type = string
 }
