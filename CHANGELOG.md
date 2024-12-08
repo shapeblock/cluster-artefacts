@@ -2,6 +2,7 @@
 
 ## 2024-12-07
 - Remove unused sb_url variable from code.
+- Change domain format from cluster_name.tld to just tld for all ingress configurations.
 
 ## 2024-11-09
 - Add service catalog patches to epinio.

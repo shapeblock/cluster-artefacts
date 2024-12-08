@@ -60,12 +60,12 @@ resource "helm_release" "registry" {
 
   set {
     name  = "ingress.hosts[0]"
-    value = format("registry.%s.%s", var.cluster_name, var.tld)
+    value = format("registry.%s", var.tld)
   }
 
   set {
     name  = "ingress.tls[0].hosts[0]"
-    value = format("registry.%s.%s", var.cluster_name, var.tld)
+    value = format("registry.%s", var.tld)
   }
 
   set {
@@ -85,7 +85,7 @@ resource "helm_release" "registry" {
 
   set {
     name  = "secrets.htpasswd"
-    value = format("%s:%s", var.cluster_name, null_resource.encrypted_registry_password.0.triggers["pw"])
+    value = format("%s:%s", "shapeblock", null_resource.encrypted_registry_password.0.triggers["pw"])
   }
 
   set {
@@ -219,8 +219,8 @@ resource "kubernetes_secret" "container_registry" {
     ".dockerconfigjson" = <<DOCKER
 {
   "auths": {
-    "registry.${var.cluster_name}.${var.tld}": {
-      "auth": "${base64encode("${var.cluster_name}:${random_password.registry_password.0.result}")}"
+    "registry.${var.tld}": {
+      "auth": "${base64encode("shapeblock:${random_password.registry_password.0.result}")}"
     }
   }
 }
@@ -244,7 +244,7 @@ resource "helm_release" "epinio" {
   values = [
     yamlencode({
       global = {
-        domain         = "${var.cluster_name}.${var.tld}"
+        domain         = var.tld
         tlsIssuer      = "letsencrypt-prod"
         tlsIssuerEmail = var.email
         dex = {

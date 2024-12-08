@@ -72,7 +72,7 @@ resource "helm_release" "grafana" {
   version    = "9.0.5"
 
   values = [
-    templatefile("${path.module}/grafana/grafana.yaml.tpl", { hostname = format("grafana.%s.%s", var.cluster_name, var.tld), password = random_password.grafana_password.0.result })
+    templatefile("${path.module}/grafana/grafana.yaml.tpl", { hostname = format("grafana.%s", var.tld), password = random_password.grafana_password.0.result })
   ]
   depends_on = [kubernetes_config_map.grafana_ini.0, kubernetes_config_map.prometheus.0, kubernetes_config_map.loki.0, kubernetes_config_map.kubernetes.0, kubernetes_secret.datasources.0, random_password.grafana_password.0]
   count      = var.loki ? 1 : 0

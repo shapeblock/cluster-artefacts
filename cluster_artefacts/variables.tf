@@ -1,7 +1,3 @@
-variable "cluster_name" {
-  description = "Name of the k8s cluster."
-}
-
 variable "cluster_uuid" {
   type = string
 }
