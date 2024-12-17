@@ -2,19 +2,19 @@ resource "kubernetes_namespace" "monitoring" {
   metadata {
     name = "monitoring"
   }
-  count = var.prometheus ? 1 : 0
+  count = var.monitoring ? 1 : 0
 }
 
 resource "random_password" "prometheus" {
   length  = 16
   special = false
-  count = var.prometheus ? 1 : 0
+  count = var.monitoring ? 1 : 0
 }
 
 resource "random_password" "grafana" {
   length  = 16
   special = false
-  count = var.prometheus ? 1 : 0
+  count = var.monitoring ? 1 : 0
 }
 
 resource "helm_release" "prometheus" {
@@ -34,7 +34,7 @@ resource "helm_release" "prometheus" {
       grafana_password   = random_password.grafana[0].result
     })
   ]
-  count = var.prometheus ? 1 : 0
+  count = var.monitoring ? 1 : 0
 }
 
 resource "kubernetes_config_map" "grafana_dashboards" {
@@ -52,5 +52,5 @@ resource "kubernetes_config_map" "grafana_dashboards" {
   }
 
   depends_on = [helm_release.prometheus]
-  count      = var.prometheus ? 1 : 0
+  count      = var.monitoring ? 1 : 0
 }

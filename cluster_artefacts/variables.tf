@@ -23,11 +23,7 @@ variable "loki" {
   type = bool
 }
 
-variable "prometheus" {
-  type = bool
-}
-
-variable "metrics_server" {
+variable "monitoring" {
   type = bool
 }
 

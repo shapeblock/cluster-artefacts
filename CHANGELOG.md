@@ -1,5 +1,10 @@
 # Changelog
 
+## 2024-12-17
+- Replace monitoring stack with kube-prometheus-stack.
+- Refactor variables.
+- Remove metrics_server.
+
 ## 2024-12-07
 - Remove unused sb_url variable from code.
 - Change domain format from cluster_name.tld to just tld for all ingress configurations.

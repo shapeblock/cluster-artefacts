@@ -21,12 +21,7 @@ variable "loki" {
   default = false
 }
 
-variable "prometheus" {
-  type    = bool
-  default = false
-}
-
-variable "metrics_server" {
+variable "monitoring" {
   type    = bool
   default = false
 }

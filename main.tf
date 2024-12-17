@@ -3,9 +3,8 @@ module "kubernetes_resources" {
   email             = var.email
   tld               = var.tld
   velero            = var.velero
-  metrics_server    = var.metrics_server
   loki              = var.loki
-  prometheus        = var.prometheus
+  monitoring        = var.monitoring
   ingress           = var.ingress
   registry          = var.registry
   nfs               = var.nfs
