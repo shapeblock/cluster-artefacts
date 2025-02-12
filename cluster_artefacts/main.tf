@@ -230,56 +230,45 @@ DOCKER
   count = var.registry ? 1 : 0
 }
 
-// epinio
-resource "helm_release" "epinio" {
-  name             = "epinio"
-  repository       = "https://epinio.github.io/helm-charts"
-  chart            = "epinio"
-  version          = "1.11.1"
-  namespace        = "epinio"
-  timeout          = 600
-  create_namespace = true
-  depends_on       = [kubectl_manifest.cluster_issuer]
+// Create namespace for Shapeblock operator
+resource "kubernetes_namespace" "kubenest" {
+  metadata {
+    name = "kubenest"
+  }
+}
+
+// Shapeblock operator values
+locals {
+  operator_values = {
+    operator = {
+      image = {
+        repository = "ghcr.io/shapeblock/operator"
+        tag        = "v3.107"
+        pullPolicy = "Always"
+      }
+      websocketUrl = "wss://${var.sb_url}/v1/ws/operator"
+      apiUrl       = "${var.sb_url}/api/v1"
+    }
+    credentials = {
+      apiKey       = "xxxxyyyy"
+      licenseKey   = "ABC123"
+      licenseEmail = "test@example.com"
+    }
+  }
+}
+
+// Install Shapeblock operator
+resource "helm_release" "shapeblock_operator" {
+  name             = "shapeblock-operator"
+  repository       = "oci://ghcr.io/shapeblock/charts"
+  chart            = "shapeblock-operator"
+  version          = "0.1.3"
+  namespace        = kubernetes_namespace.kubenest.metadata[0].name
+  create_namespace = false
 
   values = [
-    yamlencode({
-      global = {
-        domain         = var.tld
-        tlsIssuer      = "letsencrypt-prod"
-        tlsIssuerEmail = var.email
-        dex = {
-          enabled = false
-        }
-      }
-      ingress = {
-        ingressClassName = "nginx"
-      }
-      api = {
-        users = [
-          {
-            username = var.epinio_username
-            password = var.epinio_password
-            roles    = ["admin"]
-          }
-        ]
-      }
-      epinioUI = {
-        enabled = false
-      }
-    })
+    yamlencode(local.operator_values)
   ]
-}
 
-// Shapblock Service Catalog
-data "kubectl_path_documents" "service_catalog" {
-  pattern = "${path.module}/shapeblock/*-sb.yaml"
-}
-
-resource "kubectl_manifest" "service_catalog" {
-  for_each  = toset(data.kubectl_path_documents.service_catalog.documents)
-  yaml_body = each.value
-
-  depends_on = [helm_release.epinio]
-  force_new = false
-  server_side_apply = true
+  depends_on = [kubernetes_namespace.kubenest]
 }

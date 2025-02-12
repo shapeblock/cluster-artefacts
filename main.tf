@@ -12,6 +12,5 @@ module "kubernetes_resources" {
   openebs           = var.openebs
   node_count        = var.node_count
   cluster_uuid      = var.cluster_uuid
-  epinio_username   = var.epinio_username
-  epinio_password   = var.epinio_password
+  sb_url            = var.sb_url
 }

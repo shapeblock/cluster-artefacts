@@ -1,5 +1,10 @@
 # Changelog
 
+## 2025-02-12
+- Add shapeblock API URL to the code.
+- Remove epinio username and password from the code.
+- Add shapeblock API URL to the code.
+
 ## 2024-12-17
 - Replace monitoring stack with kube-prometheus-stack.
 - Refactor variables.

@@ -56,10 +56,7 @@ variable "node_count" {
   type = number
 }
 
-variable "epinio_username" {
-  type    = string
-}
-
-variable "epinio_password" {
-  type    = string
+variable "sb_url" {
+  description = "Shapeblock API URL"
+  type        = string
 }
