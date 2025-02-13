@@ -22,7 +22,7 @@ resource "helm_release" "prometheus" {
   namespace  = kubernetes_namespace.monitoring[0].metadata[0].name
   chart      = "kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
-  version    = "51.5.1"
+  version    = "69.2.4"
 
   depends_on = [kubernetes_namespace.monitoring]
 
@@ -47,8 +47,8 @@ resource "kubernetes_config_map" "grafana_dashboards" {
   }
 
   data = {
-    "pod-metrics-dashboard.json"        = file("${path.module}/grafana/dashboards/pod-metrics-dashboard.json")
-    "kube-state-metrics-dashboard.json" = file("${path.module}/grafana/dashboards/kube-state-metrics-dashboard.json")
+    "pod-metrics-dashboard.json"        = file("${path.module}/grafana/pod-metrics-dashboard.json")
+    "node-metrics-dashboard.json"      = file("${path.module}/grafana/node-metrics-dashboard.json")
   }
 
   depends_on = [helm_release.prometheus]
