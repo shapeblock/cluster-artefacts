@@ -236,7 +236,7 @@ locals {
     operator = {
       image = {
         repository = "ghcr.io/kubenesthq/operator"
-        tag        = "24-03-2024.16.31"
+        tag        = "25-03-2024.09.55"
         pullPolicy = "Always"
       }
       websocketUrl = "wss://${var.sb_url}/v1/ws/operator"
@@ -280,7 +280,7 @@ resource "helm_release" "kubenest_operator" {
   name             = "kubenest-operator"
   repository       = "oci://ghcr.io/kubenesthq/charts"
   chart            = "shapeblock-operator"
-  version          = "0.1.3"
+  version          = "0.1.5"
   namespace        = kubernetes_namespace.namespace.metadata[0].name
   create_namespace = false
 
