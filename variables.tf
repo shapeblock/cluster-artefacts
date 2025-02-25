@@ -60,3 +60,14 @@ variable "sb_url" {
   description = "Shapeblock API URL"
   type        = string
 }
+
+variable "cluster_key" {
+  description = "Cluster key"
+  type        = string
+}
+
+variable "namespace" {
+  description = "Namespace"
+  type        = string
+  default     = "kubenest"
+}

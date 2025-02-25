@@ -12,9 +12,9 @@ provider "helm" {
   }
 }
 
-resource "kubernetes_namespace" "shapeblock" {
+resource "kubernetes_namespace" "namespace" {
   metadata {
-    name = "shapeblock"
+    name = var.namespace
   }
 }
 
@@ -41,7 +41,7 @@ resource "helm_release" "registry" {
   chart      = "docker-registry"
   repository = "https://helm.twun.io"
   version    = "2.2.3"
-  namespace  = "shapeblock"
+  namespace  = var.namespace
 
   set {
     name  = "persistence.enabled"
@@ -85,7 +85,7 @@ resource "helm_release" "registry" {
 
   set {
     name  = "secrets.htpasswd"
-    value = format("%s:%s", "shapeblock", null_resource.encrypted_registry_password.0.triggers["pw"])
+    value = format("%s:%s", var.namespace, null_resource.encrypted_registry_password.0.triggers["pw"])
   }
 
   set {
@@ -101,7 +101,7 @@ resource "helm_release" "nfs" {
   chart      = "nfs-server-provisioner"
   repository = "https://raphaelmonrouzeau.github.io/charts/repository"
   version    = "1.3.0"
-  namespace  = "shapeblock"
+  namespace  = var.namespace
 
   set {
     name  = "persistence.enabled"
@@ -121,7 +121,7 @@ resource "helm_release" "ingress" {
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "nginx-ingress-controller"
   version    = "11.3.18"
-  namespace  = "shapeblock"
+  namespace  = var.namespace
   timeout    = 600
   count      = var.ingress ? 1 : 0
 }
@@ -132,7 +132,7 @@ resource "helm_release" "cert_manager" {
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "cert-manager"
   version    = "1.3.16"
-  namespace  = "cert-manager"
+  namespace  = var.namespace
   set {
     name  = "installCRDs"
     value = true
@@ -197,7 +197,7 @@ resource "helm_release" "velero" {
 data "kubernetes_service" "ingress_controller" {
   metadata {
     name      = "nginx-ingress-nginx-ingress-controller"
-    namespace = "shapeblock"
+    namespace = var.namespace
   }
   depends_on = [helm_release.ingress]
 }
@@ -212,7 +212,7 @@ locals {
 resource "kubernetes_secret" "container_registry" {
   metadata {
     name      = "registry-creds"
-    namespace = "shapeblock"
+    namespace = var.namespace
   }
 
   data = {
@@ -220,7 +220,7 @@ resource "kubernetes_secret" "container_registry" {
 {
   "auths": {
     "registry.${var.tld}": {
-      "auth": "${base64encode("shapeblock:${random_password.registry_password.0.result}")}"
+      "auth": "${base64encode("${var.namespace}:${random_password.registry_password.0.result}")}"
     }
   }
 }
@@ -230,20 +230,13 @@ DOCKER
   count = var.registry ? 1 : 0
 }
 
-// Create namespace for Shapeblock operator
-resource "kubernetes_namespace" "kubenest" {
-  metadata {
-    name = "kubenest"
-  }
-}
-
-// Shapeblock operator values
+// kubenest operator values
 locals {
   operator_values = {
     operator = {
       image = {
-        repository = "ghcr.io/shapeblock/operator"
-        tag        = "v3.107"
+        repository = "ghcr.io/kubenesthq/operator"
+        tag        = "24-03-2024.16.31"
         pullPolicy = "Always"
       }
       websocketUrl = "wss://${var.sb_url}/v1/ws/operator"
@@ -255,19 +248,60 @@ locals {
       licenseEmail = "test@example.com"
     }
   }
+
+  // Add buildwatch_values
+  buildwatch_values = {
+    image = {
+      repository = "ghcr.io/kubenesthq/buildwatch"
+      tag        = "24-03-2024.12.41"
+      pullPolicy = "Always"
+    }
+    config = {
+      inCluster     = true
+      serverAddress = ":8080"
+      backendURL    = var.sb_url
+      clusterKey    = var.cluster_key
+    }
+    ingress = {
+      enabled    = true
+      className  = "nginx"
+      annotations = {
+        "cert-manager.io/cluster-issuer" = "letsencrypt-prod"
+      }
+      host       = format("buildwatch.%s", var.tld)
+      tls        = true
+      tlsSecret  = "buildwatch-tls"
+    }
+  }
 }
 
-// Install Shapeblock operator
-resource "helm_release" "shapeblock_operator" {
-  name             = "shapeblock-operator"
-  repository       = "oci://ghcr.io/shapeblock/charts"
+// Install kubenest operator
+resource "helm_release" "kubenest_operator" {
+  name             = "kubenest-operator"
+  repository       = "oci://ghcr.io/kubenesthq/charts"
   chart            = "shapeblock-operator"
   version          = "0.1.3"
-  namespace        = kubernetes_namespace.kubenest.metadata[0].name
+  namespace        = kubernetes_namespace.namespace.metadata[0].name
   create_namespace = false
 
   values = [
     yamlencode(local.operator_values)
+  ]
+
+  depends_on = [kubernetes_namespace.namespace]
+}
+
+// install buildwatch
+resource "helm_release" "buildwatch" {
+  name             = "buildwatch"
+  repository       = "oci://ghcr.io/kubenesthq/charts"
+  chart            = "buildwatch"
+  version          = "0.1.2"
+  namespace        = kubernetes_namespace.namespace.metadata[0].name
+  create_namespace = false
+
+  values = [
+    yamlencode(local.buildwatch_values)
   ]
 
   depends_on = [kubernetes_namespace.kubenest]
