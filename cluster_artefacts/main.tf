@@ -304,5 +304,5 @@ resource "helm_release" "buildwatch" {
     yamlencode(local.buildwatch_values)
   ]
 
-  depends_on = [kubernetes_namespace.kubenest]
+  depends_on = [kubernetes_namespace.namespace]
 }
