@@ -240,10 +240,10 @@ locals {
         pullPolicy = "Always"
       }
       websocketUrl = "wss://${var.sb_url}/v1/ws/operator"
-      apiUrl       = "${var.sb_url}/api/v1"
+      apiUrl       = "${var.sb_url}"
     }
     credentials = {
-      apiKey       = "xxxxyyyy"
+      apiKey       = var.cluster_key
       licenseKey   = "ABC123"
       licenseEmail = "test@example.com"
     }
