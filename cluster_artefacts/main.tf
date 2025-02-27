@@ -236,7 +236,7 @@ locals {
     operator = {
       image = {
         repository = "ghcr.io/kubenesthq/operator"
-        tag        = "27-02-2025.13.22"
+        tag        = "27-02-2025.15.02"
         pullPolicy = "Always"
       }
       websocketUrl = "wss://${var.sb_url}/v1/ws/operator"
