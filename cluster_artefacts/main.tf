@@ -240,8 +240,6 @@ locals {
         pullPolicy = "Always"
       }
       apiUrl       = "${var.sb_url}"
-    }
-    credentials = {
       apiKey       = var.cluster_key
     }
   }
