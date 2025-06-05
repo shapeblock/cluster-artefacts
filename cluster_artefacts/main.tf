@@ -239,9 +239,9 @@ locals {
         tag        = "15-05-2025.10.57"
         pullPolicy = "Always"
       }
-      apiUrl       = "${var.sb_url}"
-      apiKey       = var.cluster_key
     }
+    apiUrl       = "${var.sb_url}"
+    apiKey       = var.cluster_key
   }
 
   // Add buildwatch_values
