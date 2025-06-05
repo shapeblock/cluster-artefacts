@@ -236,16 +236,13 @@ locals {
     operator = {
       image = {
         repository = "ghcr.io/kubenesthq/operator"
-        tag        = "27-02-2025.15.02"
+        tag        = "15-05-2025.10.57"
         pullPolicy = "Always"
       }
-      websocketUrl = "wss://${var.sb_url}/v1/ws/operator"
       apiUrl       = "${var.sb_url}"
     }
     credentials = {
       apiKey       = var.cluster_key
-      licenseKey   = "ABC123"
-      licenseEmail = "test@example.com"
     }
   }
 
@@ -253,7 +250,7 @@ locals {
   buildwatch_values = {
     image = {
       repository = "ghcr.io/kubenesthq/buildwatch"
-      tag        = "24-03-2024.12.41"
+      tag        = "22-05-2025.18.14"
       pullPolicy = "Always"
     }
     config = {
@@ -279,8 +276,8 @@ locals {
 resource "helm_release" "kubenest_operator" {
   name             = "kubenest-operator"
   repository       = "oci://ghcr.io/kubenesthq/charts"
-  chart            = "shapeblock-operator"
-  version          = "0.1.7"
+  chart            = "operator"
+  version          = "2.0.4"
   namespace        = kubernetes_namespace.namespace.metadata[0].name
   create_namespace = false
 
@@ -296,7 +293,7 @@ resource "helm_release" "buildwatch" {
   name             = "buildwatch"
   repository       = "oci://ghcr.io/kubenesthq/charts"
   chart            = "buildwatch"
-  version          = "0.1.2"
+  version          = "0.1.3"
   namespace        = kubernetes_namespace.namespace.metadata[0].name
   create_namespace = false
 
