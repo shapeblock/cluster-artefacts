@@ -274,9 +274,9 @@ locals {
 
 // Install kubenest operator
 resource "helm_release" "kubenest_operator" {
-  name             = "kubenest-operator"
+  name             = "operator"
   repository       = "oci://ghcr.io/kubenesthq/charts"
-  chart            = "operator"
+  chart            = "kubenest-operator"
   version          = "2.0.4"
   namespace        = kubernetes_namespace.namespace.metadata[0].name
   create_namespace = false
