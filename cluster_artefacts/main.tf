@@ -115,15 +115,32 @@ resource "helm_release" "nfs" {
   count = var.nfs ? 1 : 0
 }
 
+locals {
+  ingress_values = {
+    controller = {
+      kind = "DaemonSet"
+      hostNetwork = true
+      dnsPolicy = "ClusterFirstWithHostNet"
+      service = {
+        type = "ClusterIP"
+      }
+      ingressClassResource = {
+        default = true
+      }
+    }
+  }
+}
+
 // ingress
 resource "helm_release" "ingress" {
   name       = "nginx-ingress"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "nginx-ingress-controller"
-  version    = "11.3.18"
+  version    = "11.6.23"
   namespace  = var.namespace
   timeout    = 600
   count      = var.ingress ? 1 : 0
+  values = yamlencode(local.ingress_values)
 }
 
 // cert manager
@@ -131,7 +148,7 @@ resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "cert-manager"
-  version    = "1.3.16"
+  version    = "1.5.2"
   namespace  = var.namespace
   set {
     name  = "installCRDs"
